@@ -17,29 +17,55 @@
 package org.jboss.as.quickstarts.kitchensink.service;
 
 import org.jboss.as.quickstarts.kitchensink.model.Member;
+import org.jboss.as.quickstarts.kitchensink.model.Person;
 
 import javax.ejb.Stateless;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import java.util.List;
 import java.util.logging.Logger;
 
 // The @Stateless annotation eliminates the need for manual transaction demarcation
 @Stateless
-public class MemberRegistration {
+public class PersonService {
 
-  @Inject
-  private Logger log;
+    @Inject
+    private Logger log;
 
-  @Inject
-  private EntityManager em;
+    @Inject
+    private EntityManager em;
 
-  @Inject
-  private Event<Member> memberEventSrc;
+    @Inject
+    private Event<Person> personEventSrc;
 
-  public void register(Member member) throws Exception {
-    log.info("Registering " + member.getName());
-    em.persist(member);
-    memberEventSrc.fire(member);
-  }
+    public void register(Person person) throws Exception {
+        log.info("Registering person " + person.getName());
+        em.persist(person);
+        personEventSrc.fire(person);
+    }
+
+    public Person updatePerson(Person person) {
+        log.info("Updating person " + person.getName());
+        person = em.merge(person);
+        personEventSrc.fire(person);
+        return person;
+    }
+
+    public Person findPerson(Long personId) {
+        return em.find(Person.class, personId);
+    }
+
+    public List<Person> findAll() {
+        Query query = em.createQuery("SELECT * FROM Person");
+        return (List<Person>) query.getResultList();
+    }
+
+    public void deletePerson(Long personId) {
+        Person person = em.find(Person.class, personId);
+        log.info("Deleting person " + person.getName());
+        em.remove(person);
+        personEventSrc.fire(person);
+    }
 }

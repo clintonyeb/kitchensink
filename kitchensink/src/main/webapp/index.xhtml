@@ -16,79 +16,101 @@
     limitations under the License.
 -->
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:ui="http://java.sun.com/jsf/facelets"
-    xmlns:f="http://java.sun.com/jsf/core"
-    xmlns:h="http://java.sun.com/jsf/html"
-    template="/WEB-INF/templates/default.xhtml">
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                template="/WEB-INF/templates/default.xhtml">
     <ui:define name="content">
-        <h1>Welcome to JBoss!</h1>
+        <!--        <h1>Contest Management System</h1>-->
 
-        <div>
-            <p>You have successfully deployed a Java EE Enterprise
-                Application.</p>
-        </div>
+        <h:form id="reg" class="main-form">
+            <h2>Person Registration</h2>
+            <p>Register to join a contest</p>
 
-        <h:form id="reg">
-            <h2>Member Registration</h2>
-            <p>Enforces annotation-based constraints defined on the
-                model class.</p>
             <h:panelGrid columns="3" columnClasses="titleCell">
-                <h:outputLabel for="name" value="Name:" />
-                <h:inputText id="name" value="#{newMember.name}" />
-                <h:message for="name" errorClass="invalid" />
+                <h:outputLabel for="name" value="Name:"/>
+                <h:inputText id="name" value="#{newPerson.name}"/>
+                <h:message for="name" errorClass="invalid"/>
 
-                <h:outputLabel for="email" value="Email:" />
-                <h:inputText id="email" value="#{newMember.email}" />
-                <h:message for="email" errorClass="invalid" />
+                <h:outputLabel for="email" value="Email:"/>
+                <h:inputText id="email" value="#{newPerson.email}"/>
+                <h:message for="email" errorClass="invalid"/>
 
-                <h:outputLabel for="phoneNumber" value="Phone #:" />
-                <h:inputText id="phoneNumber"
-                    value="#{newMember.phoneNumber}" />
-                <h:message for="phoneNumber" errorClass="invalid" />
+                <h:outputLabel for="dob" value="Date of Birth:"/>
+                <h:inputText id="dob" value="#{newPerson.birthDate}">
+                    <f:convertDateTime pattern="dd-mm-yyyy"/>
+                </h:inputText>
+                <h:message for="dob" errorClass="invalid"/>
+
+                <h:outputLabel for="university" value="University:"/>
+                <h:selectOneMenu value="#{newPerson.university}" id="university">
+                    <f:selectItem itemLabel="Select a university" itemValue="#{null}" noSelectionOption="true"/>
+                    <f:selectItems value="#{universities}"/>
+                </h:selectOneMenu>
+                <h:message for="university" errorClass="invalid"/>
             </h:panelGrid>
 
             <p>
                 <h:panelGrid columns="2">
                     <h:commandButton id="register"
-                        action="#{memberController.register}"
-                        value="Register" styleClass="register" />
+                                     action="#{personController.register}"
+                                     value="Register" styleClass="register"/>
                     <h:messages styleClass="messages"
-                        errorClass="invalid" infoClass="valid"
-                        warnClass="warning" globalOnly="true" />
+                                errorClass="invalid" infoClass="valid"
+                                warnClass="warning" globalOnly="true"/>
                 </h:panelGrid>
             </p>
         </h:form>
-        <h2>Members</h2>
-        <h:panelGroup rendered="#{empty members}">
-            <em>No registered members.</em>
+        <h2>People</h2>
+
+        <h:panelGroup rendered="#{empty people}">
+            <em>No registered people.</em>
         </h:panelGroup>
-        <h:dataTable var="_member" value="#{members}"
-            rendered="#{not empty members}"
-            styleClass="simpletablestyle">
+        <h:dataTable var="_person" value="#{people}"
+                     rendered="#{not empty members}"
+                     styleClass="simpletablestyle">
             <h:column>
                 <f:facet name="header">Id</f:facet>
-                #{_member.id}
+                #{_person.id}
             </h:column>
             <h:column>
                 <f:facet name="header">Name</f:facet>
-                #{_member.name}
+                #{_person.name}
             </h:column>
             <h:column>
                 <f:facet name="header">Email</f:facet>
-                #{_member.email}
+                #{_person.email}
             </h:column>
+<!--            <h:column>-->
+<!--                <f:facet name="header">Date of Birth</f:facet>-->
+<!--                #{_person.birthDate}-->
+<!--            </h:column>-->
             <h:column>
-                <f:facet name="header">Phone #</f:facet>
-                #{_member.phoneNumber}
+                <f:facet name="header">University</f:facet>
+                #{_person.university}
             </h:column>
+            <!--            <h:column>-->
+            <!--                <f:facet name="header">REST URL</f:facet>-->
+            <!--                <a-->
+            <!--                        href="#{request.contextPath}/rest/people/#{_person.id}">/rest/people/#{_person.id}</a>-->
+            <!--            </h:column>-->
             <h:column>
-                <f:facet name="header">REST URL</f:facet>
-                <a
-                    href="#{request.contextPath}/rest/members/#{_member.id}">/rest/members/#{_member.id}</a>
+                <f:facet name="header">Actions</f:facet>
+                <div style="display: inline-flex">
+                    <h:form>
+                        <h:commandButton action="#{personController.show(_person.id)}" value="View"/>
+                    </h:form>
+                    <h:form>
+                        <h:commandButton action="#{personController.getUpdate(_person.id)}" value="Update"/>
+                    </h:form>
+                    <h:form>
+                        <h:commandButton action="#{personController.delete(_person.id)}" value="Delete"/>
+                    </h:form>
+                </div>
             </h:column>
             <f:facet name="footer">
-            REST URL for all members: <a
-                    href="#{request.contextPath}/rest/members">/rest/members</a>
+                REST URL for all people: <a
+                    href="#{request.contextPath}/rest/people">/rest/people</a>
             </f:facet>
         </h:dataTable>
     </ui:define>

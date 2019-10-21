@@ -16,8 +16,8 @@
  */
 package org.jboss.as.quickstarts.kitchensink.controller;
 
-import org.jboss.as.quickstarts.kitchensink.model.Member;
-import org.jboss.as.quickstarts.kitchensink.service.MemberRegistration;
+import org.jboss.as.quickstarts.kitchensink.model.Person;
+import org.jboss.as.quickstarts.kitchensink.service.PersonService;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Model;
@@ -26,30 +26,50 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.util.Arrays;
+import java.util.List;
 
 // The @Model stereotype is a convenience mechanism to make this a request-scoped bean that has an
 // EL name
 // Read more about the @Model stereotype in this FAQ:
 // http://www.cdi-spec.org/faq/#accordion6
 @Model
-public class MemberController {
+public class PersonController {
 
   @Inject
   private FacesContext facesContext;
 
   @Inject
-  private MemberRegistration memberRegistration;
+  private PersonService personService;
 
   @Produces
   @Named
-  private Member newMember;
+  private Person newPerson;
 
-  public void register() throws Exception {
+  @Produces
+  @Named
+  private List<String> universities = Arrays.asList
+    (
+      "Baylor University",
+      "Texas State University",
+      "Michigan University",
+      "Harvard University",
+      "Oxford University",
+      "Yale University",
+      "MIT University"
+    );
+
+  @PostConstruct
+  public void initNewPerson() {
+    newPerson = new Person();
+  }
+
+  public void register() {
     try {
-      memberRegistration.register(newMember);
+      personService.register(newPerson);
       FacesMessage m = new FacesMessage(FacesMessage.SEVERITY_INFO, "Registered!", "Registration successful");
       facesContext.addMessage(null, m);
-      initNewMember();
+      initNewPerson();
     } catch (Exception e) {
       String errorMessage = getRootErrorMessage(e);
       FacesMessage m = new FacesMessage(FacesMessage.SEVERITY_ERROR, errorMessage, "Registration unsuccessful");
@@ -57,9 +77,48 @@ public class MemberController {
     }
   }
 
-  @PostConstruct
-  public void initNewMember() {
-    newMember = new Member();
+  public String update() {
+    try {
+      this.newPerson = personService.updatePerson(newPerson);
+      FacesMessage m = new FacesMessage(FacesMessage.SEVERITY_INFO, "Updated!", "Updated successful");
+      facesContext.addMessage(null, m);
+      initNewPerson();
+      return "index.xhtml";
+    } catch (Exception e) {
+      String errorMessage = getRootErrorMessage(e);
+      FacesMessage m = new FacesMessage(FacesMessage.SEVERITY_ERROR, errorMessage, "Update unsuccessful");
+      facesContext.addMessage(null, m);
+      return "update.xhtml";
+    }
+  }
+
+  public String show(Long personId) {
+    this.newPerson = personService.findPerson(personId);
+    return "show.xhtml";
+  }
+
+  //    public String showAll() {
+  //        this.people = personService.findAll();
+  //        return "show-all.xhtml";
+  //    }
+
+  public String getUpdate(Long personId) {
+    this.newPerson = personService.findPerson(personId);
+    System.out.println(this.newPerson.getId() + " before update");
+    return "update.xhtml";
+  }
+
+  public void delete(Long personId) {
+    try {
+      personService.deletePerson(personId);
+      FacesMessage m = new FacesMessage(FacesMessage.SEVERITY_INFO, "Deleted!", "Person deletion successful");
+      facesContext.addMessage(null, m);
+      //            initNewPerson();
+    } catch (Exception e) {
+      String errorMessage = getRootErrorMessage(e);
+      FacesMessage m = new FacesMessage(FacesMessage.SEVERITY_ERROR, errorMessage, "Deletion unsuccessful");
+      facesContext.addMessage(null, m);
+    }
   }
 
   private String getRootErrorMessage(Exception e) {

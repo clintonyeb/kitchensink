@@ -16,7 +16,7 @@
  */
 package org.jboss.as.quickstarts.kitchensink.data;
 
-import org.jboss.as.quickstarts.kitchensink.model.Member;
+import org.jboss.as.quickstarts.kitchensink.model.Person;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
@@ -28,27 +28,27 @@ import javax.inject.Named;
 import java.util.List;
 
 @RequestScoped
-public class MemberListProducer {
+public class PersonListProducer {
 
-  @Inject
-  private MemberRepository memberRepository;
+    @Inject
+    private PersonRepository personRepository;
 
-  private List<Member> members;
+    private List<Person> people;
 
-  // @Named provides access the return value via the EL variable name "members" in the UI (e.g.
-  // Facelets or JSP view)
-  @Produces
-  @Named
-  public List<Member> getMembers() {
-    return members;
-  }
+    // @Named provides access the return value via the EL variable name "members" in the UI (e.g.
+    // Facelets or JSP view)
+    @Produces
+    @Named
+    public List<Person> getPeople() {
+        return people;
+    }
 
-  public void onMemberListChanged(@Observes(notifyObserver = Reception.IF_EXISTS) final Member member) {
-    retrieveAllMembersOrderedByName();
-  }
+    public void onPersonListChanged(@Observes(notifyObserver = Reception.IF_EXISTS) final Person person) {
+        retrieveAllPeopleOrderedByName();
+    }
 
-  @PostConstruct
-  public void retrieveAllMembersOrderedByName() {
-    members = memberRepository.findAllOrderedByName();
-  }
+    @PostConstruct
+    public void retrieveAllPeopleOrderedByName() {
+        people = personRepository.findAllOrderedByName();
+    }
 }
