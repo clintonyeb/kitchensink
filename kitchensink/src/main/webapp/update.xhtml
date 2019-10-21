@@ -28,7 +28,7 @@
             <p>Update your information</p>
 
             <h:panelGrid columns="3" columnClasses="titleCell">
-                <h:inputHidden id="id" value="#{newPerson.id}"  />
+                <h:inputHidden id="id" value="#{newPerson.id}"/>
 
                 <h:outputLabel for="name" value="Name:"/>
                 <h:inputText id="name" value="#{newPerson.name}"/>
@@ -39,7 +39,9 @@
                 <h:message for="email" errorClass="invalid"/>
 
                 <h:outputLabel for="dob" value="Date of Birth:"/>
-                <f:convertDateTime pattern="dd-mm-yyyy" id="dob" value="#{newPerson.birthDate}"/>
+                <h:inputText id="dob" value="#{newPerson.birthDate}">
+                    <f:convertDateTime pattern="dd-mm-yyyy"/>
+                </h:inputText>
                 <h:message for="dob" errorClass="invalid"/>
 
                 <h:outputLabel for="university" value="University:"/>

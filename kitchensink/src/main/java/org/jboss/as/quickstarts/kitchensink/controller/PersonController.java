@@ -59,11 +59,6 @@ public class PersonController {
       "MIT University"
     );
 
-  @PostConstruct
-  public void initNewPerson() {
-    newPerson = new Person();
-  }
-
   public void register() {
     try {
       personService.register(newPerson);
@@ -77,48 +72,9 @@ public class PersonController {
     }
   }
 
-  public String update() {
-    try {
-      this.newPerson = personService.updatePerson(newPerson);
-      FacesMessage m = new FacesMessage(FacesMessage.SEVERITY_INFO, "Updated!", "Updated successful");
-      facesContext.addMessage(null, m);
-      initNewPerson();
-      return "index.xhtml";
-    } catch (Exception e) {
-      String errorMessage = getRootErrorMessage(e);
-      FacesMessage m = new FacesMessage(FacesMessage.SEVERITY_ERROR, errorMessage, "Update unsuccessful");
-      facesContext.addMessage(null, m);
-      return "update.xhtml";
-    }
-  }
-
-  public String show(Long personId) {
-    this.newPerson = personService.findPerson(personId);
-    return "show.xhtml";
-  }
-
-  //    public String showAll() {
-  //        this.people = personService.findAll();
-  //        return "show-all.xhtml";
-  //    }
-
-  public String getUpdate(Long personId) {
-    this.newPerson = personService.findPerson(personId);
-    System.out.println(this.newPerson.getId() + " before update");
-    return "update.xhtml";
-  }
-
-  public void delete(Long personId) {
-    try {
-      personService.deletePerson(personId);
-      FacesMessage m = new FacesMessage(FacesMessage.SEVERITY_INFO, "Deleted!", "Person deletion successful");
-      facesContext.addMessage(null, m);
-      //            initNewPerson();
-    } catch (Exception e) {
-      String errorMessage = getRootErrorMessage(e);
-      FacesMessage m = new FacesMessage(FacesMessage.SEVERITY_ERROR, errorMessage, "Deletion unsuccessful");
-      facesContext.addMessage(null, m);
-    }
+  @PostConstruct
+  public void initNewPerson() {
+    newPerson = new Person();
   }
 
   private String getRootErrorMessage(Exception e) {
@@ -138,6 +94,50 @@ public class PersonController {
     }
     // This is the root cause message
     return errorMessage;
+  }
+
+  public String update() {
+    try {
+      this.newPerson = personService.updatePerson(newPerson);
+      FacesMessage m = new FacesMessage(FacesMessage.SEVERITY_INFO, "Updated!", "Updated successful");
+      facesContext.addMessage(null, m);
+      initNewPerson();
+      return "index.xhtml";
+    } catch (Exception e) {
+      String errorMessage = getRootErrorMessage(e);
+      FacesMessage m = new FacesMessage(FacesMessage.SEVERITY_ERROR, errorMessage, "Update unsuccessful");
+      facesContext.addMessage(null, m);
+      return "update.xhtml";
+    }
+  }
+
+  //    public String showAll() {
+  //        this.people = personService.findAll();
+  //        return "show-all.xhtml";
+  //    }
+
+  public String show(Long personId) {
+    this.newPerson = personService.findPerson(personId);
+    return "show.xhtml";
+  }
+
+  public String getUpdate(Long personId) {
+    this.newPerson = personService.findPerson(personId);
+    System.out.println(this.newPerson.getId() + " before update");
+    return "update.xhtml";
+  }
+
+  public void delete(Long personId) {
+    try {
+      personService.deletePerson(personId);
+      FacesMessage m = new FacesMessage(FacesMessage.SEVERITY_INFO, "Deleted!", "Person deletion successful");
+      facesContext.addMessage(null, m);
+      //            initNewPerson();
+    } catch (Exception e) {
+      String errorMessage = getRootErrorMessage(e);
+      FacesMessage m = new FacesMessage(FacesMessage.SEVERITY_ERROR, errorMessage, "Deletion unsuccessful");
+      facesContext.addMessage(null, m);
+    }
   }
 
 }

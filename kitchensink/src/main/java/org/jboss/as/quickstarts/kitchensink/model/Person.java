@@ -6,11 +6,15 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import javax.xml.bind.annotation.XmlRootElement;
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -18,7 +22,9 @@ import java.util.Date;
  */
 @Entity
 @Data
-public class Person {
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = "email"))
+@XmlRootElement
+public class Person implements Serializable {
 
   @Id
   @GeneratedValue
