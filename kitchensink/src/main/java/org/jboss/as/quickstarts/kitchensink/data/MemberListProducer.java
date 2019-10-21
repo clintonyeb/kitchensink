@@ -25,8 +25,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.util.List;
 
-import org.jboss.as.quickstarts.kitchensink.model.Member;
-
 @RequestScoped
 public class MemberListProducer {
 
