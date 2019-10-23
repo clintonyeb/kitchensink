@@ -36,108 +36,108 @@ import java.util.List;
 @Model
 public class PersonController {
 
-  @Inject
-  private FacesContext facesContext;
+    @Inject
+    private FacesContext facesContext;
 
-  @Inject
-  private PersonService personService;
+    @Inject
+    private PersonService personService;
 
-  @Produces
-  @Named
-  private Person newPerson;
+    @Produces
+    @Named
+    private Person newPerson;
 
-  @Produces
-  @Named
-  private List<String> universities = Arrays.asList
-    (
-      "Baylor University",
-      "Texas State University",
-      "Michigan University",
-      "Harvard University",
-      "Oxford University",
-      "Yale University",
-      "MIT University"
-    );
+    @Produces
+    @Named
+    private List<String> universities = Arrays.asList
+            (
+                    "Baylor University",
+                    "Texas State University",
+                    "Michigan University",
+                    "Harvard University",
+                    "Oxford University",
+                    "Yale University",
+                    "MIT University"
+            );
 
-  public void register() {
-    try {
-      personService.register(newPerson);
-      FacesMessage m = new FacesMessage(FacesMessage.SEVERITY_INFO, "Registered!", "Registration successful");
-      facesContext.addMessage(null, m);
-      initNewPerson();
-    } catch (Exception e) {
-      String errorMessage = getRootErrorMessage(e);
-      FacesMessage m = new FacesMessage(FacesMessage.SEVERITY_ERROR, errorMessage, "Registration unsuccessful");
-      facesContext.addMessage(null, m);
-    }
-  }
-
-  @PostConstruct
-  public void initNewPerson() {
-    newPerson = new Person();
-  }
-
-  private String getRootErrorMessage(Exception e) {
-    // Default to general error message that registration failed.
-    String errorMessage = "Registration failed. See server log for more information";
-    if (e == null) {
-      // This shouldn't happen, but return the default messages
-      return errorMessage;
+    public void register() {
+        try {
+            personService.register(newPerson);
+            FacesMessage m = new FacesMessage(FacesMessage.SEVERITY_INFO, "Registered!", "Registration successful");
+            facesContext.addMessage(null, m);
+            initNewPerson();
+        } catch (Exception e) {
+            String errorMessage = getRootErrorMessage(e);
+            FacesMessage m = new FacesMessage(FacesMessage.SEVERITY_ERROR, errorMessage, "Registration unsuccessful");
+            facesContext.addMessage(null, m);
+        }
     }
 
-    // Start with the exception and recurse to find the root cause
-    Throwable t = e;
-    while (t != null) {
-      // Get the message from the Throwable class instance
-      errorMessage = t.getLocalizedMessage();
-      t = t.getCause();
+    @PostConstruct
+    public void initNewPerson() {
+        newPerson = new Person();
     }
-    // This is the root cause message
-    return errorMessage;
-  }
 
-  public String update() {
-    try {
-      this.newPerson = personService.updatePerson(newPerson);
-      FacesMessage m = new FacesMessage(FacesMessage.SEVERITY_INFO, "Updated!", "Updated successful");
-      facesContext.addMessage(null, m);
-      initNewPerson();
-      return "index.xhtml";
-    } catch (Exception e) {
-      String errorMessage = getRootErrorMessage(e);
-      FacesMessage m = new FacesMessage(FacesMessage.SEVERITY_ERROR, errorMessage, "Update unsuccessful");
-      facesContext.addMessage(null, m);
-      return "update.xhtml";
+    private String getRootErrorMessage(Exception e) {
+        // Default to general error message that registration failed.
+        String errorMessage = "Registration failed. See server log for more information";
+        if (e == null) {
+            // This shouldn't happen, but return the default messages
+            return errorMessage;
+        }
+
+        // Start with the exception and recurse to find the root cause
+        Throwable t = e;
+        while (t != null) {
+            // Get the message from the Throwable class instance
+            errorMessage = t.getLocalizedMessage();
+            t = t.getCause();
+        }
+        // This is the root cause message
+        return errorMessage;
     }
-  }
 
-  //    public String showAll() {
-  //        this.people = personService.findAll();
-  //        return "show-all.xhtml";
-  //    }
-
-  public String show(Long personId) {
-    this.newPerson = personService.findPerson(personId);
-    return "show.xhtml";
-  }
-
-  public String getUpdate(Long personId) {
-    this.newPerson = personService.findPerson(personId);
-    System.out.println(this.newPerson.getId() + " before update");
-    return "update.xhtml";
-  }
-
-  public void delete(Long personId) {
-    try {
-      personService.deletePerson(personId);
-      FacesMessage m = new FacesMessage(FacesMessage.SEVERITY_INFO, "Deleted!", "Person deletion successful");
-      facesContext.addMessage(null, m);
-      //            initNewPerson();
-    } catch (Exception e) {
-      String errorMessage = getRootErrorMessage(e);
-      FacesMessage m = new FacesMessage(FacesMessage.SEVERITY_ERROR, errorMessage, "Deletion unsuccessful");
-      facesContext.addMessage(null, m);
+    public String update() {
+        try {
+            this.newPerson = personService.updatePerson(newPerson);
+            FacesMessage m = new FacesMessage(FacesMessage.SEVERITY_INFO, "Updated!", "Updated successful");
+            facesContext.addMessage(null, m);
+            initNewPerson();
+            return "index.xhtml";
+        } catch (Exception e) {
+            String errorMessage = getRootErrorMessage(e);
+            FacesMessage m = new FacesMessage(FacesMessage.SEVERITY_ERROR, errorMessage, "Update unsuccessful");
+            facesContext.addMessage(null, m);
+            return "update.xhtml";
+        }
     }
-  }
+
+    //    public String showAll() {
+    //        this.people = personService.findAll();
+    //        return "show-all.xhtml";
+    //    }
+
+    public String show(Long personId) {
+        this.newPerson = personService.findPerson(personId);
+        return "show.xhtml";
+    }
+
+    public String getUpdate(Long personId) {
+        this.newPerson = personService.findPerson(personId);
+        System.out.println(this.newPerson.getId() + " before update");
+        return "update.xhtml";
+    }
+
+    public void delete(Long personId) {
+        try {
+            personService.deletePerson(personId);
+            FacesMessage m = new FacesMessage(FacesMessage.SEVERITY_INFO, "Deleted!", "Person deletion successful");
+            facesContext.addMessage(null, m);
+            //            initNewPerson();
+        } catch (Exception e) {
+            String errorMessage = getRootErrorMessage(e);
+            FacesMessage m = new FacesMessage(FacesMessage.SEVERITY_ERROR, errorMessage, "Deletion unsuccessful");
+            facesContext.addMessage(null, m);
+        }
+    }
 
 }

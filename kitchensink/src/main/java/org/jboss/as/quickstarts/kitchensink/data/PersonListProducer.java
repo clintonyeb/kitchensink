@@ -30,25 +30,25 @@ import java.util.List;
 @RequestScoped
 public class PersonListProducer {
 
-  @Inject
-  private PersonRepository personRepository;
+    @Inject
+    private PersonRepository personRepository;
 
-  private List<Person> people;
+    private List<Person> people;
 
-  // @Named provides access the return value via the EL variable name "members" in the UI (e.g.
-  // Facelets or JSP view)
-  @Produces
-  @Named
-  public List<Person> getPeople() {
-    return people;
-  }
+    // @Named provides access the return value via the EL variable name "members" in the UI (e.g.
+    // Facelets or JSP view)
+    @Produces
+    @Named
+    public List<Person> getPeople() {
+        return people;
+    }
 
-  public void onPersonListChanged(@Observes(notifyObserver = Reception.IF_EXISTS) final Person person) {
-    retrieveAllPeopleOrderedByName();
-  }
+    public void onPersonListChanged(@Observes(notifyObserver = Reception.IF_EXISTS) final Person person) {
+        retrieveAllPeopleOrderedByName();
+    }
 
-  @PostConstruct
-  public void retrieveAllPeopleOrderedByName() {
-    people = personRepository.findAllOrderedByName();
-  }
+    @PostConstruct
+    public void retrieveAllPeopleOrderedByName() {
+        people = personRepository.findAllOrderedByName();
+    }
 }

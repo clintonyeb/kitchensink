@@ -43,6 +43,13 @@
         </license>
     </licenses>
 
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <version.org.jboss.arquillian>1.1.5.Final</version.org.jboss.arquillian>
+        <version.org.wildfly>8.1.0.Final</version.org.wildfly>
+        <!--        <version.junit>4.11</version.junit>-->
+    </properties>
+
     <dependencies>
 
         <!-- First declare the APIs we depend on and need for compilation. All
@@ -163,11 +170,11 @@
             <version>3.0.11.RELEASE</version>
         </dependency>
 
-
     </dependencies>
 
     <build>
         <!-- Set the name of the WAR, used as the context root when the app is deployed -->
         <finalName>${project.artifactId}</finalName>
     </build>
+
 </project>
