@@ -1,5 +1,7 @@
 package org.jboss.as.quickstarts.kitchensink.service;
 
+import org.jboss.as.quickstarts.kitchensink.data.ContestRepository;
+import org.jboss.as.quickstarts.kitchensink.data.TeamRepository;
 import org.jboss.as.quickstarts.kitchensink.model.Contest;
 import org.jboss.as.quickstarts.kitchensink.model.Person;
 import org.jboss.as.quickstarts.kitchensink.model.Team;
@@ -7,6 +9,7 @@ import org.jboss.as.quickstarts.kitchensink.model.Team;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.validation.ConstraintViolationException;
+import java.security.InvalidKeyException;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
@@ -29,7 +32,7 @@ public class RegistrationService {
             contestRepository.save(contest);
             teamRepository.save(team);
         } else {
-            throw new ConstraintViolationException("Constraint violation");
+            throw new IllegalArgumentException("Constraint violation");
         }
     }
 
@@ -41,7 +44,7 @@ public class RegistrationService {
             contestRepository.save(superContest);
             teamRepository.save(team);
         } else {
-            throw new ConstraintViolationException("Constraint violation");
+            throw new IllegalArgumentException("Constraint violation");
         }
     }
 
