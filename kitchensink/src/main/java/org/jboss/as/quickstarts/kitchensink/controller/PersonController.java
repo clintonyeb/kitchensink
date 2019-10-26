@@ -16,18 +16,27 @@
  */
 package org.jboss.as.quickstarts.kitchensink.controller;
 
+import lombok.Data;
+import org.jboss.as.quickstarts.kitchensink.data.ContestRepository;
+import org.jboss.as.quickstarts.kitchensink.data.TeamRegForm;
+import org.jboss.as.quickstarts.kitchensink.data.TeamRepository;
+import org.jboss.as.quickstarts.kitchensink.model.Contest;
 import org.jboss.as.quickstarts.kitchensink.model.Person;
+import org.jboss.as.quickstarts.kitchensink.model.Team;
 import org.jboss.as.quickstarts.kitchensink.service.PersonService;
+import org.jboss.as.quickstarts.kitchensink.service.TeamService;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Model;
 import javax.enterprise.inject.Produces;
 import javax.faces.application.FacesMessage;
+import javax.faces.component.UIOutput;
 import javax.faces.context.FacesContext;
+import javax.faces.event.AjaxBehaviorEvent;
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.util.Arrays;
-import java.util.List;
+import java.io.Serializable;
+import java.util.*;
 
 // The @Model stereotype is a convenience mechanism to make this a request-scoped bean that has an
 // EL name
@@ -42,9 +51,42 @@ public class PersonController {
     @Inject
     private PersonService personService;
 
+    @Inject
+    private ContestRepository contestRepository;
+
+    @Inject
+    private TeamRepository teamRepository;
+
+    @Inject
+    private TeamService teamService;
+
     @Produces
     @Named
     private Person newPerson;
+
+    @Produces
+    @Named
+    private String teamSearch;
+
+    @Produces
+    @Named
+    private List<Team> searchedTeams;
+
+    @Produces
+    @Named
+    private Contest selectedContest;
+
+    @Produces
+    @Named
+    private Team selectedTeam;
+
+    @Produces
+    @Named
+    private Set<Team> contestTeams;
+
+    @Produces
+    @Named
+    private TeamRegForm regForm;
 
     @Produces
     @Named
@@ -75,6 +117,8 @@ public class PersonController {
     @PostConstruct
     public void initNewPerson() {
         newPerson = new Person();
+        searchedTeams = new ArrayList<>();
+        regForm = new TeamRegForm();
     }
 
     private String getRootErrorMessage(Exception e) {
@@ -111,11 +155,6 @@ public class PersonController {
         }
     }
 
-    //    public String showAll() {
-    //        this.people = personService.findAll();
-    //        return "show-all.xhtml";
-    //    }
-
     public String show(Long personId) {
         this.newPerson = personService.findPerson(personId);
         return "show.xhtml";
@@ -138,6 +177,39 @@ public class PersonController {
             FacesMessage m = new FacesMessage(FacesMessage.SEVERITY_ERROR, errorMessage, "Deletion unsuccessful");
             facesContext.addMessage(null, m);
         }
+    }
+
+    public void doSearch(AjaxBehaviorEvent event) {
+        String search = (String) ((UIOutput) event.getSource()).getValue();
+
+        if (search == null || search.isEmpty()) {
+            searchedTeams = new ArrayList<>();
+        } else {
+            searchedTeams = teamService.doSearch(search);
+        }
+    }
+
+    @Produces
+    @Named
+    public String[] getStates() {
+        return Arrays.stream(Team.State.class.getEnumConstants()).map(Enum::name).toArray(String[]::new);
+    }
+
+    public void getSelectedContestTeams() {
+        if (selectedContest == null) {
+            contestTeams = new HashSet<>();
+        } else {
+            contestTeams = selectedContest.getTeams();
+        }
+    }
+
+    public void registerTeam() {
+        System.out.println("Here");
+        selectedContest = contestRepository.findById(regForm.getContestId());
+        selectedTeam = teamRepository.findById(regForm.getTeamId());
+
+        selectedContest.getTeams().add(selectedTeam);
+        teamService.saveContest(selectedContest);
     }
 
 }

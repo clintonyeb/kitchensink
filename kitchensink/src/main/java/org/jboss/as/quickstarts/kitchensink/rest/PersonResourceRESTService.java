@@ -17,7 +17,9 @@
 package org.jboss.as.quickstarts.kitchensink.rest;
 
 import org.jboss.as.quickstarts.kitchensink.data.PersonRepository;
+import org.jboss.as.quickstarts.kitchensink.data.TeamRepository;
 import org.jboss.as.quickstarts.kitchensink.model.Person;
+import org.jboss.as.quickstarts.kitchensink.model.Team;
 import org.jboss.as.quickstarts.kitchensink.service.PersonService;
 
 import javax.enterprise.context.RequestScoped;
@@ -33,11 +35,6 @@ import javax.ws.rs.core.Response;
 import java.util.*;
 import java.util.logging.Logger;
 
-/**
- * JAX-RS Example
- * <p/>
- * This class produces a RESTful service to read/write the contents of the members table.
- */
 @Path("/people")
 @RequestScoped
 public class PersonResourceRESTService {
@@ -50,6 +47,9 @@ public class PersonResourceRESTService {
     private Validator validator;
     @Inject
     private PersonRepository repository;
+
+    @Inject
+    private TeamRepository teamRepository;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -173,4 +173,16 @@ public class PersonResourceRESTService {
         }
         return person != null;
     }
+
+    @GET
+    @Path("/teams/{id:[0-9][0-9]*}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Team lookupTeamById(@PathParam("id") long id) {
+        Team team = teamRepository.findById(id);
+        if (team == null) {
+            throw new WebApplicationException(Response.Status.NOT_FOUND);
+        }
+        return team;
+    }
+
 }

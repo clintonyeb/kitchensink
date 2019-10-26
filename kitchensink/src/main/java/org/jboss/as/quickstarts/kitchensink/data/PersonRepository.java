@@ -16,6 +16,7 @@
  */
 package org.jboss.as.quickstarts.kitchensink.data;
 
+import org.jboss.as.quickstarts.kitchensink.model.Contest;
 import org.jboss.as.quickstarts.kitchensink.model.Person;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -24,6 +25,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import javax.transaction.Transactional;
 import java.util.List;
 
 @ApplicationScoped
@@ -50,5 +52,10 @@ public class PersonRepository {
         Root<Person> person = criteria.from(Person.class);
         criteria.select(person).orderBy(cb.asc(person.get("name")));
         return em.createQuery(criteria).getResultList();
+    }
+
+    @Transactional
+    public Person save(Person c) {
+        return em.merge(c);
     }
 }

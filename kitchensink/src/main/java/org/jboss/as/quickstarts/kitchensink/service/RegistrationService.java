@@ -19,10 +19,10 @@ import java.util.Set;
 public class RegistrationService {
 
     @Inject
-    private ContestRepository contestRepository;
+    private TeamRepository teamRepository;
 
     @Inject
-    private TeamRepository teamRepository;
+    private ContestRepository contestRepository;
 
     public void registerTeamWithContest(Team team, Contest contest) {
         if (validateTeamWithContest(team, contest)) {

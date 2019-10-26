@@ -19,3 +19,15 @@
 insert into Member (id, name, email, phone_number) values (0, 'John Smith', 'john.smith@mailinator.com', '2125551212')
 
 insert into Person (id, name, email, university, birthDate) values (0, 'John Smith', 'john.smith@mailinator.com', 'Baylor University', TO_DATE('29/10/1994', 'DD/MM/YYYY'))
+
+insert into Team (id, name, rank, state) values (0, 'TeamA', 1, 'Accepted')
+insert into Team (id, name, rank, state) values (1, 'TeamB', 5, 'Pending')
+insert into Team (id, name, rank, state) values (2, 'TeamC', 3, 'Canceled')
+insert into Team (id, name, rank, state) values (3, 'TeamD', 4, 'Accepted')
+insert into Team (id, name, rank, state) values (4, 'TeamD', 2, 'Pending')
+insert into Team (id, name, rank, state) values (5, 'TeamE', 1, 'Canceled')
+insert into Team (id, name, rank, state) values (6, 'TeamF', 6, 'Accepted')
+
+insert into Contest (id, name, capacity, registrationAllowed, registrationFrom, registrationTo) values (0, 'ContestA', 5, true, '01/02/2019', '01/12/2019')
+insert into Contest (id, name, capacity, registrationAllowed, registrationFrom, registrationTo) values (1, 'ContestB', 8, true, '01/02/2019', '01/12/2019')
+insert into Contest (id, name, capacity, registrationAllowed, registrationFrom, registrationTo) values (2, 'ContestC', 3, true, '01/02/2019', '01/12/2019')

@@ -3,6 +3,7 @@ package org.jboss.as.quickstarts.kitchensink.model;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -13,7 +14,7 @@ import java.util.Set;
 
 @Entity
 @Data
-public class Contest {
+public class Contest implements Serializable {
 
     @Id
     @GeneratedValue
@@ -40,10 +41,10 @@ public class Contest {
     @Temporal(TemporalType.DATE)
     private Date registrationTo;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "contest")
-    private Set<Team> teams = new HashSet();
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "contest")
+    private Set<Team> teams = new HashSet<>();
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "person_contest",
             joinColumns = {@JoinColumn(name = "Contest_ID", referencedColumnName = "ID")},
             inverseJoinColumns = {@JoinColumn(name = "Person_ID", referencedColumnName = "ID")})

@@ -9,6 +9,8 @@ import javax.validation.constraints.Pattern;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Person entity class
@@ -44,18 +46,18 @@ public class Person implements Serializable {
     @NotNull
     private Date birthDate;
 
-    //  @OneToMany(fetch = FetchType.LAZY, mappedBy = "coach")
-    //  private Set<Team> teams = new HashSet();
+      @OneToMany(fetch = FetchType.LAZY, mappedBy = "coach")
+      private Set<Team> teams = new HashSet();
 
-    //  @ManyToMany//(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    //  @JoinTable(name = "person_team",
-    //    joinColumns = {@JoinColumn(name = "Person_ID", referencedColumnName = "ID")},
-    //    inverseJoinColumns = {@JoinColumn(name = "Team_ID", referencedColumnName = "ID")})
-    //  private Set<Team> membership = new HashSet<>();
+    @ManyToMany(fetch = FetchType.EAGER)
+      @JoinTable(name = "person_team",
+        joinColumns = {@JoinColumn(name = "Person_ID", referencedColumnName = "ID")},
+        inverseJoinColumns = {@JoinColumn(name = "Team_ID", referencedColumnName = "ID")})
+      private Set<Team> membership = new HashSet<>();
 
-    //  @ManyToMany
-    //  @JoinTable(name = "person_contest",
-    //    joinColumns = {@JoinColumn(name = "Person_ID", referencedColumnName = "ID")},
-    //    inverseJoinColumns = {@JoinColumn(name = "Contest_ID", referencedColumnName = "ID")})
-    //  private Set<Contest> contests = new HashSet<>();
+    @ManyToMany(fetch = FetchType.EAGER)
+      @JoinTable(name = "person_contest",
+        joinColumns = {@JoinColumn(name = "Person_ID", referencedColumnName = "ID")},
+        inverseJoinColumns = {@JoinColumn(name = "Contest_ID", referencedColumnName = "ID")})
+      private Set<Contest> contests = new HashSet<>();
 }
