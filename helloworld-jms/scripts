@@ -1,0 +1,7 @@
+/Users/yeboah/EAP-7.2.0/bin/add-user.sh -a -u 'user' -p 'testpassword' -g 'guest' # Create User
+
+/Users/yeboah/EAP-7.2.0/bin/jboss-cli.sh --connect --file=configure-jms.cli # Configure queue
+
+mvn clean compile exec:java #Compile and deploy
+
+/Users/yeboah/EAP-7.2.0/bin/jboss-cli.sh --connect --file=remove-jms.cli  3 Remove queue

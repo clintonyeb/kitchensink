@@ -16,27 +16,24 @@
  */
 package org.jboss.as.quickstarts.jms;
 
-import java.util.logging.Logger;
-import java.util.Properties;
-
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
-import javax.jms.JMSConsumer;
 import javax.jms.JMSContext;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import java.util.Properties;
+import java.util.Scanner;
+import java.util.logging.Logger;
 
 public class HelloWorldJMSClient {
     private static final Logger log = Logger.getLogger(HelloWorldJMSClient.class.getName());
 
     // Set up all the default values
-    private static final String DEFAULT_MESSAGE = "Hello, World!";
     private static final String DEFAULT_CONNECTION_FACTORY = "jms/RemoteConnectionFactory";
     private static final String DEFAULT_DESTINATION = "jms/queue/test";
-    private static final String DEFAULT_MESSAGE_COUNT = "1";
-    private static final String DEFAULT_USERNAME = "quickstartUser";
-    private static final String DEFAULT_PASSWORD = "quickstartPwd1!";
+    private static final String DEFAULT_USERNAME = "user";
+    private static final String DEFAULT_PASSWORD = "testpassword";
     private static final String INITIAL_CONTEXT_FACTORY = "org.wildfly.naming.client.WildFlyInitialContextFactory";
     private static final String PROVIDER_URL = "http-remoting://127.0.0.1:8080";
 
@@ -67,22 +64,49 @@ public class HelloWorldJMSClient {
             Destination destination = (Destination) namingContext.lookup(destinationString);
             log.info("Found destination \"" + destinationString + "\" in JNDI");
 
-            int count = Integer.parseInt(System.getProperty("message.count", DEFAULT_MESSAGE_COUNT));
-            String content = System.getProperty("message.content", DEFAULT_MESSAGE);
-
             try (JMSContext context = connectionFactory.createContext(userName, password)) {
-                log.info("Sending " + count + " messages with content: " + content);
-                // Send the specified number of messages
-                for (int i = 0; i < count; i++) {
-                    context.createProducer().send(destination, content);
-                }
+                System.out.println("\n");
 
-                // Create the JMS consumer
-                JMSConsumer consumer = context.createConsumer(destination);
-                // Then receive the same number of messages that were sent
-                for (int i = 0; i < count; i++) {
-                    String text = consumer.receiveBody(String.class, 5000);
-                    log.info("Received message with content " + text);
+                Scanner reader = new Scanner(System.in);
+                long teamId;
+                String teamStatus;
+                String message;
+                int readStatus;
+
+                while (true) {
+                    System.out.println();
+                    System.out.print("Enter teamId: ");
+                    teamId = reader.nextLong();
+
+                    System.out.println("Enter 1 for Accepted");
+                    System.out.println("Enter 2 for Pending");
+                    System.out.println("Enter 3 for Canceled");
+
+                    System.out.print("Enter team status: ");
+
+
+                    readStatus = reader.nextInt();
+
+                    switch (readStatus) {
+                        case 1:
+                            teamStatus = "Accepted";
+                            break;
+                        case 2:
+                            teamStatus = "Pending";
+                            break;
+                        default:
+                            teamStatus = "Canceled";
+                            break;
+                    }
+
+                    message = "" + teamId + "::" + teamStatus;
+
+                    // send to server
+                    System.out.println("Sending information to listeners...");
+                    context.createProducer().send(destination, message);
+
+                    System.out.println("Do you want to continue?");
+                    System.out.println("Enter any key to continue or press -1 to quit");
                 }
             }
         } catch (NamingException e) {

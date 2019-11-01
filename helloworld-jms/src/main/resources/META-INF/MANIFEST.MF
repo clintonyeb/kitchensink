@@ -1,0 +1,1 @@
+Main-Class: org.jboss.as.quickstarts.jms.HelloWorldJMSClient
