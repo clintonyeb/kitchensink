@@ -23,6 +23,8 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -39,17 +41,48 @@ public class PersonService {
     @Inject
     private Event<Person> personEventSrc;
 
-    public void register(Person person) throws Exception {
+    public Person register(Person person) {
         log.info("Registering person " + person.getName());
-        em.persist(person);
+        Person p = em.merge(person);
         personEventSrc.fire(person);
+        return p;
     }
 
     public Person updatePerson(Person person) {
         log.info("Updating person " + person.getName());
-        person = em.merge(person);
-        personEventSrc.fire(person);
-        return person;
+
+        // check id is set on person
+        if(person.getId() == null) {
+            return register(person);
+        } else {
+            Person oldPerson = findPerson(person.getId());
+
+            if(oldPerson == null) {
+                return register(person);
+            }
+
+            em.detach(oldPerson);
+            person = em.merge(person);
+
+            personEventSrc.fire(person);
+
+            // log update
+            logPersonUpdate(oldPerson, person);
+
+            return person;
+        }
+    }
+
+    private void logPersonUpdate(Person old, Person person) {
+        System.out.println("\n\n");
+        log.info("---------Person update complete---------");
+        log.info(String.format("Person with Id: %d", person.getId()));
+        log.info(String.format("Name: %s -> %s", old.getName(), person.getName()));
+        log.info(String.format("Email: %s -> %s", old.getEmail(), person.getEmail()));
+        log.info(String.format("University: %s -> %s", old.getUniversity(), person.getUniversity()));
+        log.info(String.format("BirthDate: %s -> %s", old.getBirthDate(), formatDate(person.getBirthDate())));
+        log.info("---------Person update complete---------");
+        System.out.println("\n\n");
     }
 
     public Person findPerson(Long personId) {
@@ -66,5 +99,10 @@ public class PersonService {
         log.info("Deleting person " + person.getName());
         em.remove(person);
         personEventSrc.fire(person);
+    }
+
+    private String formatDate(Date date) {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        return formatter.format(date);
     }
 }

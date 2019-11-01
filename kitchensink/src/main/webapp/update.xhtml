@@ -19,48 +19,70 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
-                template="/WEB-INF/templates/default.xhtml">
+                template="/WEB-INF/templates/default.xhtml"
+                xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
     <ui:define name="content">
         <!--        <h1>Contest Management System</h1>-->
 
-        <h:form id="reg" class="main-form">
-            <h2>Person Update</h2>
-            <p>Update your information</p>
+        <div class="row">
+            <div class="col-md-3 register-left">
+                <img src="resources/gfx/logo.png" alt="Contest Logo"/>
+                <h3>Welcome</h3>
+                <p>Update your information</p>
+            </div>
+            <div class="col-md-9 register-right">
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                        <h3 class="register-heading">Person Update</h3>
+                        <h:form class="row register-form" id="reg">
+                            <div class="col-md-12">
+                                <h:inputHidden id="id" value="#{newPerson.id}"/>
 
-            <h:panelGrid columns="3" columnClasses="titleCell">
-                <h:inputHidden id="id" value="#{newPerson.id}"/>
+                                <div class="form-group">
+                                    <h:inputText type="text" class="form-control" a:placeholder="Full Name" id="name"
+                                                 value="#{newPerson.name}"/>
+                                    <small><h:message for="name" errorClass="text-danger" class="form-text text-muted"/></small>
+                                </div>
+                                <div class="form-group">
+                                    <h:inputText id="email" value="#{newPerson.email}" a:placeholder="Your Email"
+                                                 class="form-control"/>
+                                    <small><h:message for="email" errorClass="text-danger"/></small>
+                                </div>
+                                <div class="form-group">
+                                    <h:outputLabel for="dob" value="Date of Birth:"/>
+                                    <h:inputText id="dob" value="#{newPerson.birthDate}" class="form-control">
+                                        <f:convertDateTime pattern="dd-mm-yyyy"/>
+                                    </h:inputText>
+                                    <small><h:message for="dob" errorClass="text-danger"
+                                                      class="form-text text-muted"/></small>
+                                </div>
+                                <div class="form-group">
+                                    <h:outputLabel for="university" value="University:"/>
+                                    <h:selectOneMenu value="#{newPerson.university}" id="university"
+                                                     class="form-control" a:autocomplete="off">
+                                        <f:selectItem itemLabel="Select a university" itemValue="#{null}"
+                                                      noSelectionOption="true"/>
+                                        <f:selectItems value="#{universities}"/>
+                                    </h:selectOneMenu>
+                                    <small><h:message for="university" errorClass="text-danger"
+                                                      class="form-text text-muted"/></small>
+                                </div>
 
-                <h:outputLabel for="name" value="Name:"/>
-                <h:inputText id="name" value="#{newPerson.name}"/>
-                <h:message for="name" errorClass="invalid"/>
+                                <div class="form-group">
+                                    <h:commandButton id="update"
+                                                     action="#{personController.update}"
+                                                     value="Update" styleClass="btnRegister" clas="form-control"/>
+                                    <small><h:messages styleClass="messages"
+                                                       errorClass="text-danger" infoClass="text-info"
+                                                       warnClass="warning" globalOnly="true"
+                                                       class="form-text text-muted"/></small>
+                                </div>
+                            </div>
+                        </h:form>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-                <h:outputLabel for="email" value="Email:"/>
-                <h:inputText id="email" value="#{newPerson.email}"/>
-                <h:message for="email" errorClass="invalid"/>
-
-                <h:outputLabel for="dob" value="Date of Birth:"/>
-                <h:inputText id="dob" value="#{newPerson.birthDate}">
-                    <f:convertDateTime pattern="dd-mm-yyyy"/>
-                </h:inputText>
-                <h:message for="dob" errorClass="invalid"/>
-
-                <h:outputLabel for="university" value="University:"/>
-                <h:selectOneMenu value="#{newPerson.university}" id="university">
-                    <f:selectItems value="#{universities}"/>
-                </h:selectOneMenu>
-                <h:message for="university" errorClass="invalid"/>
-            </h:panelGrid>
-
-            <p>
-                <h:panelGrid columns="2">
-                    <h:commandButton id="update"
-                                     action="#{personController.update}"
-                                     value="Update" styleClass="register"/>
-                    <h:messages styleClass="messages"
-                                errorClass="invalid" infoClass="valid"
-                                warnClass="warning" globalOnly="true"/>
-                </h:panelGrid>
-            </p>
-        </h:form>
     </ui:define>
 </ui:composition>
